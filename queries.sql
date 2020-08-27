@@ -289,3 +289,42 @@ FROM
 	 FROM ret_info_title)
 	 tmp WHERE rn = 1
 	 ORDER BY emp_no;
+
+-- Deliverable 2: Mentorship Eligibility
+-- Include: employee number, first & last name, title, from_date & to_date
+-- To be eligible to participate in the mentorship program, employees will need to 
+-- have a date of birth that falls between January 1, 1965 and December 31, 1965. 
+
+SELECT e.emp_no, 
+	e.first_name, 
+	e.last_name,
+	ttl.title,
+	ttl.from_date,
+	ttl.to_date
+INTO mentorship_eligibility_rough
+FROM employees AS e
+INNER JOIN titles AS ttl
+ON (e.emp_no = ttl.emp_no)
+WHERE (e.birth_date BETWEEN '1965-01-01' AND '1965-12-31');
+
+
+-- Remove repeat employees
+SELECT emp_no,
+	first_name,
+	last_name,
+	title,
+	from_date,
+	to_date
+INTO mentorship_eligibilty
+FROM 
+	(SELECT emp_no,
+	first_name,
+	last_name,
+	title,
+	from_date,
+	to_date, ROW_NUMBER() OVER
+	(PARTITION BY (emp_no)
+	 ORDER BY from_date DESC) rn
+	 FROM mentorship_eligibility)
+	 tmp WHERE rn = 1
+	 ORDER BY emp_no;
