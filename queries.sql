@@ -249,3 +249,17 @@ ON (ce.emp_no = de.emp_no)
 INNER JOIN departments AS d
 ON (de.dept_no = d.dept_no)
 WHERE d.dept_name IN ('Sales', 'Development');
+
+-- CHALLENGE
+SELECT ri.emp_no,
+	ri.first_name,
+	ri.last_name,
+	t.title,
+	t.from_date,
+	s.salary
+INTO retirement_info_title
+FROM retirement_info AS RI
+INNER JOIN title AS t
+ON (ri.emp_no = t.emp_no)
+INNER JOIN salary AS s
+ON (ri.emp_no = s.emp_no)
