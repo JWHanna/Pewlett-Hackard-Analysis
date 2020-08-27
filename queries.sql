@@ -251,15 +251,41 @@ ON (de.dept_no = d.dept_no)
 WHERE d.dept_name IN ('Sales', 'Development');
 
 -- CHALLENGE
+
+-- Deliverable 1: Number of Retiring Employees by Title
+-- Create a table containing the number of employees who are about to 
+-- retire (those born 1952-1955), grouped by job title.
 SELECT ri.emp_no,
 	ri.first_name,
 	ri.last_name,
-	t.title,
-	t.from_date,
+	ttl.title,
+	ttl.from_date,
 	s.salary
 INTO retirement_info_title
 FROM retirement_info AS RI
-INNER JOIN title AS t
-ON (ri.emp_no = t.emp_no)
-INNER JOIN salary AS s
+INNER JOIN titles AS ttl
+ON (ri.emp_no = ttl.emp_no)
+INNER JOIN salaries AS s
 ON (ri.emp_no = s.emp_no)
+ORDER BY ttl.title;
+
+-- Get rid of the dublicates by keeping only an employee's most recent job title.
+SELECT emp_no,
+	first_name,
+	last_name,
+	title,
+	from_date,
+	salary
+INTO ret_info_title2
+FROM 
+	(SELECT emp_no,
+	first_name,
+	last_name,
+	title,
+	from_date,
+	salary, ROW_NUMBER() OVER
+	(PARTITION BY (emp_no)
+	 ORDER BY from_date DESC) rn
+	 FROM ret_info_title)
+	 tmp WHERE rn = 1
+	 ORDER BY emp_no;
