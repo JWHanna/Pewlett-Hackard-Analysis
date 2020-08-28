@@ -1,5 +1,6 @@
 # Pewlett-Hackard-Analysis
-
+Module 7
+  
   In this analysis we used the data provided to determine the number of employees at Pewlett Hackard that are retiring and the number of employees eligible for a retirement package in order to help the company prepare for the future. The suggested solution for replacing these positions (as a significant portion of the employees at Pewlett Hackard are of retiring age) was to implement a mentorship program in which outgoing employees stay on part-time to mentor their replacements. The data for employees that are eligible for the mentorship program can be found in this analysis as well as the employees eligible for retirement, the employees eleigible for retirement by department, and the employees eligible for retirement by title.
   
   
