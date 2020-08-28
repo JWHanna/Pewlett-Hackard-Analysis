@@ -289,6 +289,14 @@ FROM
 	 tmp WHERE rn = 1
 	 ORDER BY emp_no;
 
+-- Retirees by title count
+SELECT COUNT(emp_no), 
+	title
+INTO retirement_title_count
+FROM retirement_info_title
+GROUP BY title
+ORDER BY title
+
 -- Deliverable 2: Mentorship Eligibility
 -- Include: employee number, first & last name, title, from_date & to_date
 -- To be eligible to participate in the mentorship program, employees will need to 
