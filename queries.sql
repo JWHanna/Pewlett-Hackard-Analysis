@@ -180,7 +180,7 @@ ORDER BY de.dept_no;
 SELECT * FROM salaries
 ORDER BY to_date DESC;
 
-SELECT e.emp_no,
+SELECT s.emp_no,
 	e.first_name,
 	e.last_name,
 	e.gender,
@@ -255,19 +255,18 @@ WHERE d.dept_name IN ('Sales', 'Development');
 -- Deliverable 1: Number of Retiring Employees by Title
 -- Create a table containing the number of employees who are about to 
 -- retire (those born 1952-1955), grouped by job title.
-SELECT ri.emp_no,
-	ri.first_name,
-	ri.last_name,
+SELECT ce.emp_no,
+	ce.first_name,
+	ce.last_name,
 	ttl.title,
 	ttl.from_date,
 	s.salary
-INTO retirement_info_title
-FROM retirement_info AS RI
+INTO retirement_info_title_rough
+FROM current_emp AS ce
 INNER JOIN titles AS ttl
-ON (ri.emp_no = ttl.emp_no)
+ON (ce.emp_no = ttl.emp_no)
 INNER JOIN salaries AS s
-ON (ri.emp_no = s.emp_no)
-ORDER BY ttl.title;
+ON (ce.emp_no = s.emp_no);
 
 -- Get rid of the dublicates by keeping only an employee's most recent job title.
 SELECT emp_no,
@@ -276,7 +275,7 @@ SELECT emp_no,
 	title,
 	from_date,
 	salary
-INTO ret_info_title2
+INTO retirement_info_title
 FROM 
 	(SELECT emp_no,
 	first_name,
@@ -286,7 +285,7 @@ FROM
 	salary, ROW_NUMBER() OVER
 	(PARTITION BY (emp_no)
 	 ORDER BY from_date DESC) rn
-	 FROM ret_info_title)
+	 FROM retirement_info_title_rough)
 	 tmp WHERE rn = 1
 	 ORDER BY emp_no;
 
@@ -295,17 +294,21 @@ FROM
 -- To be eligible to participate in the mentorship program, employees will need to 
 -- have a date of birth that falls between January 1, 1965 and December 31, 1965. 
 
-SELECT e.emp_no, 
+SELECT de.emp_no, 
 	e.first_name, 
 	e.last_name,
 	ttl.title,
 	ttl.from_date,
 	ttl.to_date
 INTO mentorship_eligibility_rough
-FROM employees AS e
+FROM dept_emp AS de
+INNER JOIN employees AS e
+ON (de.emp_no = e.emp_no)
 INNER JOIN titles AS ttl
-ON (e.emp_no = ttl.emp_no)
-WHERE (e.birth_date BETWEEN '1965-01-01' AND '1965-12-31');
+ON (de.emp_no = ttl.emp_no)
+WHERE (e.birth_date BETWEEN '1965-01-01' AND '1965-12-31')
+-- Trying to ensure that all employees included are current employees	
+	AND (de.to_date = '9999-01-01');
 
 
 -- Remove repeat employees
